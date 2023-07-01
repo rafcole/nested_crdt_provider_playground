@@ -6,18 +6,16 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
 
-
 import { mockJsonToYDoc, mockCellsToYDoc } from "./mocking/mockDataToYDoc";
-
 
 console.log("test nodemon change");
 
 // to test mockCellsToYDoc
-const doc = mockCellsToYDoc(
+const doc = mockCellsToYDoc([
   { id: "cellIdA", content: "console.log('hello i am cell A');", type: "code" },
   { id: "cellIdB", content: "console.log('hello i am cell B');", type: "code" },
-  { id: "cellIdC", content: "console.log('meow (cell 3)');", type: "code" }
-);
+  { id: "cellIdC", content: "console.log('meow (cell 3)');", type: "code" },
+]);
 
 // to testMockJsonToYDoc
 // const doc = mockJsonToYDoc(JSON.stringify({

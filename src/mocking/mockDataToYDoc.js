@@ -39,7 +39,7 @@ const mockCellsDummyData = [
   { id: "cellId3", content: "console.log('cell 3');", type: "code" }
 ]
 
-export const mockCellsToYDoc = (...cells) => {
+export const mockCellsToYDoc = (cells) => {
   if (cells.length === 0) cells = mockCellsDummyData;
 
   const mockDoc = new Y.Doc();
