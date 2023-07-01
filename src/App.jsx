@@ -6,23 +6,46 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
 
-// Choose 1 of the following 2 lines to use mock data
 
-// import { useMockCellIDListEffects, doc } from "./mocking/useMockCellIDListEffects";
+import { mockJsonToYDoc, mockCellsToYDoc } from "./mocking/mockDataToYDoc";
 
-// import { useMockNotebookEffects, doc } from "./mocking/useMockNotebookEffects";
-
-import { mockCellsToYDoc } from "./mocking/mockCellArrToYDoc";
-
-// end note
 
 console.log("test nodemon change");
 
+// to test mockCellsToYDoc
 const doc = mockCellsToYDoc(
   { id: "cellIdA", content: "console.log('hello i am cell A');", type: "code" },
   { id: "cellIdB", content: "console.log('hello i am cell B');", type: "code" },
   { id: "cellIdC", content: "console.log('meow (cell 3)');", type: "code" }
 );
+
+// to testMockJsonToYDoc
+// const doc = mockJsonToYDoc(JSON.stringify({
+//   "notebook": {
+//     "rawCellData": {
+//       "cellIdA": {
+//         "id": "cellIdA",
+//         "content": "console.log('hello i am cell A dude');",
+//         "type": "code"
+//       },
+//       "cellIdB": {
+//         "id": "cellIdB",
+//         "content": "console.log('hello i am cell B dude');",
+//         "type": "code"
+//       },
+//       "cellIdC": {
+//         "id": "cellIdC",
+//         "content": "console.log('meow (cell 3 dude)');",
+//         "type": "code"
+//       }
+//     },
+//     "cellOrderArr": [
+//       "cellIdA",
+//       "cellIdB",
+//       "cellIdC"
+//     ]
+//   }
+// }));
 
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
@@ -31,10 +54,6 @@ const provider = new WebsocketProvider(
 );
 
 function App() {
-  // pick one of the following 2 lines to use mock data
-  // const [cellIdList, setCellIdList] = useMockNotebookEffects();
-  // const [cellIdList, setCellIdList] = useMockCellIDListEffects();
-
   const [cellIdList, setCellIdList] = useState([]);
   const [document, setDocument] = useState(null);
 
@@ -53,13 +72,11 @@ function App() {
     return (editor, monaco) => {
       editorRef.current = editor;
 
-      // pick one of the following 2 lines to use mock data
       const type = document
         .get("notebook")
         .get("rawCellData")
         .get(cellId)
         .get("content");
-      // const type = doc.get("notebook").get(cellId);
 
       const binding = new MonacoBinding(
         type,
