@@ -5,11 +5,10 @@ import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
-import { mockDoc } from "./notebookMockGenerator";
 
 console.log('test nodemon change')
 
-const doc =mockDoc
+const doc = new Y.Doc();
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
   import.meta.env.VITE_ROTATING_ROOM || "test-room4",
