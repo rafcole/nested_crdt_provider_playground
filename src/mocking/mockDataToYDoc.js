@@ -40,7 +40,7 @@ const mockCellsDummyData = [
 ]
 
 export const mockCellsToYDoc = (cells) => {
-  if (cells.length === 0) cells = mockCellsDummyData;
+  if (!cells) cells = mockCellsDummyData;
 
   const mockDoc = new Y.Doc();
   const yNotebookYMap = mockDoc.getMap("notebook");
