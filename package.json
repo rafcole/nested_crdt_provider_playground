@@ -11,12 +11,14 @@
     "kill_node_ws_1234": "lsof -n -i:1234 | grep LISTEN | awk '{ print $2 }' | uniq | xargs -r kill -9",
     "kill_node_dev_5173": "lsof -n -i:5173 | grep LISTEN | awk '{ print $2 }' | uniq | xargs -r kill -9",
     "launch_dev": "npm run dev",
+    "reset_chrome": "npm run close_chrome && npm run open_chrome",
     "close_chrome": "killall 'Google Chrome'",
     "open_chrome": "open -a \"Google Chrome\" http://localhost:5173 --args --auto-open-devtools-for-tabs",
     "launch_server": "node node_modules/y-websocket/bin/server.js",
     "delete_last_line_from_env": "sed -i '' -e '$ d'  ./.env",
     "add_uuid_room_to_env": "echo \"VITE_ROTATING_ROOM=`uuid`\" >> ./.env",
-    "reset": "npm run close_chrome && npm run open_chrome && npm run kill_node_ws_1234 && npm run kill_node_dev_5173 && npm run delete_last_line_from_env && npm run add_uuid_room_to_env && concurrently \"npm run launch_server\" \"npm run launch_dev\""
+    "reset": "npm run kill_node_ws_1234 && npm run kill_node_dev_5173 && npm run delete_last_line_from_env && npm run add_uuid_room_to_env && concurrently \"npm run launch_server\" \"npm run launch_dev\"",
+    "reset:restartchrome": "npm run reset_chrome && npm run reset"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.4.6",
