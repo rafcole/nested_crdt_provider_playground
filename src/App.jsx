@@ -19,7 +19,7 @@ cellIdArr.forEach((cellId) => {
 function App() {
   const editorRef = useRef(null);
 
-  function handleEditorDidMounta(editor, monaco) {
+  function handleEditorDidMountA(editor, monaco) {
     editor = editor;
  
     const type = doc.get('notebook').get("monacoA"); 
@@ -35,32 +35,22 @@ function App() {
     const binding = new MonacoBinding(type, editor.getModel(), new Set([editor]), provider.awareness)
     console.log(provider.awareness);                
   }
-    function handleEditorDidMountArray(editor, monaco, cellId) {
-    editor = editor;
- 
-    const type = doc.get('notebook').get(cellId); 
-
-    const binding = new MonacoBinding(type, editor.getModel(),new Set([editor]), provider.awareness)
-    console.log(provider.awareness);                
-  }
   
   return (
     <div> 
-      {cellIdArr.map((cellId) => {
+      {/* {cellIdArr.map((cellId) => {
         return (
-          <div>
           <Editor
             key={cellId}
             defaultValue={`Hello my cell id is ${cellId}`}
             height="35vh"
             width="100vw"
             theme="vs-dark"
-            onMount={(editor, monaco)=> handleEditorDidMountArray(editor, monaco, cellId)}
+            onMount={handleEditorDidMount}
           />
-          </div>
         )
-      }  )} 
-       {/* <Editor
+      }  )}  */}
+       <Editor
       defaultValue='Editor A default value from editor component'
       height="35vh"
       width="100vw"
@@ -73,7 +63,7 @@ function App() {
       width="100vw"
       theme="vs-dark"
       onMount={handleEditorDidMountB}
-    /> */}
+    />
     </div>
 
   )
