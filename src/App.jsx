@@ -10,11 +10,19 @@ import { useReactive } from "@reactivedata/react";
 
 // import { useMockCellIDListEffects, doc } from "./mocking/useMockCellIDListEffects";
 
-import { useMockNotebookEffects, doc } from "./mocking/useMockNotebookEffects";
+// import { useMockNotebookEffects, doc } from "./mocking/useMockNotebookEffects";
+
+import { mockCellsToYDoc } from "./mocking/mockCellArrToYDoc";
 
 // end note
 
-console.log('test nodemon change')
+console.log("test nodemon change");
+
+const doc = mockCellsToYDoc(
+  { id: "cellIdA", content: "console.log('hello i am cell A');", type: "code" },
+  { id: "cellIdB", content: "console.log('hello i am cell B');", type: "code" },
+  { id: "cellIdC", content: "console.log('meow (cell 3)');", type: "code" }
+);
 
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
@@ -22,11 +30,23 @@ const provider = new WebsocketProvider(
   doc
 );
 
-
 function App() {
   // pick one of the following 2 lines to use mock data
-  const [cellIdList, setCellIdList] = useMockNotebookEffects();
+  // const [cellIdList, setCellIdList] = useMockNotebookEffects();
   // const [cellIdList, setCellIdList] = useMockCellIDListEffects();
+
+  const [cellIdList, setCellIdList] = useState([]);
+  const [document, setDocument] = useState(null);
+
+  const loadDoc = () => {
+    setDocument(doc);
+    setCellIdList(() => doc.get("notebook").get("cellOrderArr").toArray());
+  };
+
+  useEffect(() => {
+    loadDoc();
+  }, []);
+
   const editorRef = useRef(null);
 
   function createEditorDidMountHandler(cellId) {
@@ -34,7 +54,11 @@ function App() {
       editorRef.current = editor;
 
       // pick one of the following 2 lines to use mock data
-      const type = doc.get("notebook").get("rawCellData").get(cellId).get("content");
+      const type = document
+        .get("notebook")
+        .get("rawCellData")
+        .get(cellId)
+        .get("content");
       // const type = doc.get("notebook").get(cellId);
 
       const binding = new MonacoBinding(
