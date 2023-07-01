@@ -45,7 +45,7 @@ function App() {
 
   return (
     <div>
-      {cellIdArr.map((cellId) => {
+      {cellIdList.map((cellId) => {
         return (
           <Editor
             key={cellId}
