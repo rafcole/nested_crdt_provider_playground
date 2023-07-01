@@ -1,5 +1,5 @@
 
-### plzrun script
+### `reset` script
 This script automatically kills the existing server process, and updates the `.env` file with a new room ID.
 **dependencies**:
   npm packages `concurently` and `uuid` must be installed globally
