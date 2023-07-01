@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import Editor from "@monaco-editor/react";
 import * as Y from "yjs";
@@ -11,16 +11,20 @@ const provider = new WebsocketProvider(
   "test-1",
   doc
 );
-const yNotebook = doc.getMap("notebook");
-const cellIdArr = ["monacoA", "monacoB"];
 
-cellIdArr.forEach((cellId) => {
-  yNotebook.set(cellId, new Y.Text());
-});
-yNotebook.set("monacoA", new Y.Text());
-yNotebook.set("monacoB", new Y.Text());
+const yNotebook = doc.getMap("notebook");
+const cellIdArr = ["monacoA", "monacoB"]; // mock data
 
 function App() {
+  const [cellIdList, setCellIdList] = useState([]);
+
+  useEffect(() => {
+    setCellIdList(() => cellIdArr);
+    cellIdList.forEach((cellId) => {
+      yNotebook.set(cellId, new Y.Text());
+    });
+  }, []);
+
   const editorRef = useRef(null);
 
   function createEditorDidMountHandler(cellId) {
