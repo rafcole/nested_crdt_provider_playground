@@ -29,14 +29,14 @@ function App() {
 
   function createEditorDidMountHandler(cellId) {
     return (editor, monaco) => {
-      editor = editor;
+      editorRef.current = editor;
 
       const type = doc.get("notebook").get(cellId);
 
       const binding = new MonacoBinding(
         type,
-        editor.getModel(),
-        new Set([editor]),
+        editorRef.current.getModel(),
+        new Set([editorRef.current]),
         provider.awareness
       );
       console.log(provider.awareness);
