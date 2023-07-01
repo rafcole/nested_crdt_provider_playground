@@ -6,38 +6,36 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
 
+// Choose 1 of the following 2 lines to use mock data
+
+// import { useMockCellIDListEffects, doc } from "./mocking/useMockCellIDListEffects";
+
+import { useMockNotebookEffects, doc } from "./mocking/useMockNotebookEffects";
+
+// end note
+
 console.log('test nodemon change')
 
-const doc = new Y.Doc();
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
   import.meta.env.VITE_ROTATING_ROOM || "test-room4",
   doc
 );
 
-const yNotebook = doc.getMap("notebook");
-const cellIdArr = ["monacoA", "monacoB"]; // mock data
 
 function App() {
-  const [cellIdList, setCellIdList] = useState([]);
-  useEffect(() => {
-    setCellIdList(() => cellIdArr);
-  }, []);
-
-  useEffect(() => {
-    cellIdArr.forEach((cellId) => {
-      yNotebook.set(cellId, new Y.Text('useEffect default value'));
-    });
-    console.log(yNotebook.toJSON())
-  }, []);
-
+  // pick one of the following 2 lines to use mock data
+  const [cellIdList, setCellIdList] = useMockNotebookEffects();
+  // const [cellIdList, setCellIdList] = useMockCellIDListEffects();
   const editorRef = useRef(null);
 
   function createEditorDidMountHandler(cellId) {
     return (editor, monaco) => {
       editorRef.current = editor;
 
-      const type = doc.get("notebook").get(cellId);
+      // pick one of the following 2 lines to use mock data
+      const type = doc.get("notebook").get("rawCellData").get(cellId).get("content");
+      // const type = doc.get("notebook").get(cellId);
 
       const binding = new MonacoBinding(
         type,
@@ -51,6 +49,7 @@ function App() {
 
   return (
     <div>
+      <h3>multiMonacoSimple</h3>
       {cellIdList.map((cellId) => {
         return (
           <Editor
