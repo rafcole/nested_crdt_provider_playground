@@ -1,44 +1,47 @@
-import { useState, useRef } from 'react'
-import reactLogo from './assets/react.svg'
-import Editor from "@monaco-editor/react"
-import * as Y from "yjs"
-import { MonacoBinding } from "y-monaco"
-import { WebsocketProvider } from 'y-websocket'
+import { useState, useRef } from "react";
+import reactLogo from "./assets/react.svg";
+import Editor from "@monaco-editor/react";
+import * as Y from "yjs";
+import { MonacoBinding } from "y-monaco";
+import { WebsocketProvider } from "y-websocket";
 
 const doc = new Y.Doc();
-const provider = new WebsocketProvider('ws://localhost:1234', 'test', doc);
-const yNotebook = doc.getMap('notebook');
-const cellIdArr = ['monacoA', 'monacoB']
+const provider = new WebsocketProvider(
+  import.meta.env.VITE_WEBSOCKET_SERVER,
+  "test-1",
+  doc
+);
+const yNotebook = doc.getMap("notebook");
+const cellIdArr = ["monacoA", "monacoB"];
 
 cellIdArr.forEach((cellId) => {
   yNotebook.set(cellId, new Y.Text());
-})
-// yNotebook.set('monacoA', new Y.Text());
-// yNotebook.set('monacoB', new Y.Text());
+});
+yNotebook.set("monacoA", new Y.Text());
+yNotebook.set("monacoB", new Y.Text());
 
 function App() {
   const editorRef = useRef(null);
 
-  function handleEditorDidMountA(editor, monaco) {
-    editor = editor;
- 
-    const type = doc.get('notebook').get("monacoA"); 
+  function createEditorDidMountHandler(cellId) {
+    return (editor, monaco) => {
+      editor = editor;
 
-    const binding = new MonacoBinding(type, editor.getModel(),new Set([editor]), provider.awareness)
-    console.log(provider.awareness);                
+      const type = doc.get("notebook").get(cellId);
+
+      const binding = new MonacoBinding(
+        type,
+        editor.getModel(),
+        new Set([editor]),
+        provider.awareness
+      );
+      console.log(provider.awareness);
+    };
   }
-  function handleEditorDidMountB(editor, monaco) {
-    editor = editor;
 
-    const type = doc.get('notebook').get("monacoB");
-
-    const binding = new MonacoBinding(type, editor.getModel(), new Set([editor]), provider.awareness)
-    console.log(provider.awareness);                
-  }
-  
   return (
-    <div> 
-      {/* {cellIdArr.map((cellId) => {
+    <div>
+      {cellIdArr.map((cellId) => {
         return (
           <Editor
             key={cellId}
@@ -46,27 +49,12 @@ function App() {
             height="35vh"
             width="100vw"
             theme="vs-dark"
-            onMount={handleEditorDidMount}
+            onMount={createEditorDidMountHandler(cellId)}
           />
-        )
-      }  )}  */}
-       <Editor
-      defaultValue='Editor A default value from editor component'
-      height="35vh"
-      width="100vw"
-      theme="vs-dark"
-      onMount={handleEditorDidMountA}
-    />
-      <Editor
-      defaultValue='Editor B default value from editor component'
-      height="35vh"
-      width="100vw"
-      theme="vs-dark"
-      onMount={handleEditorDidMountB}
-    />
+        );
+      })}
     </div>
-
-  )
+  );
 }
 
-export default App
+export default App;
