@@ -4,11 +4,14 @@ import Editor from "@monaco-editor/react";
 import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
+import { useReactive } from "@reactivedata/react";
+
+console.log('test nodemon change')
 
 const doc = new Y.Doc();
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
-  "test-1",
+  import.meta.env.VITE_ROTATING_ROOM || "test-room4",
   doc
 );
 
@@ -19,10 +22,18 @@ function App() {
   const [cellIdList, setCellIdList] = useState([]);
 
   useEffect(() => {
-    setCellIdList(() => cellIdArr);
+    // needs async?
+    setCellIdList((_) => cellIdArr);
+
+    // cannot read properties of undefined when loading
+    // fresh room with chrome
+    // chrome eventually works
+    // firefox doesnt
     cellIdList.forEach((cellId) => {
-      yNotebook.set(cellId, new Y.Text());
+      yNotebook.set(cellId, new Y.Text('useEffect default value'));
     });
+
+    console.log(yNotebook.toJSON())
   }, []);
 
   const editorRef = useRef(null);
