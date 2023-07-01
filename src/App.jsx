@@ -5,12 +5,13 @@ import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
-import 'dotenv/config'
+
+console.log('test nodemon change')
 
 const doc = new Y.Doc();
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
-  process.env.ROOM_NAME || "test-room4",
+  import.meta.env.VITE_ROTATING_ROOM || "test-room4",
   doc
 );
 
