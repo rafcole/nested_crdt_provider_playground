@@ -5,10 +5,11 @@ import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
+import { mockDoc } from "./notebookMockGenerator";
 
 console.log('test nodemon change')
 
-const doc = new Y.Doc();
+const doc =mockDoc
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
   import.meta.env.VITE_ROTATING_ROOM || "test-room4",
@@ -20,19 +21,14 @@ const cellIdArr = ["monacoA", "monacoB"]; // mock data
 
 function App() {
   const [cellIdList, setCellIdList] = useState([]);
+  useEffect(() => {
+    setCellIdList(() => cellIdArr);
+  }, []);
 
   useEffect(() => {
-    // needs async?
-    setCellIdList((_) => cellIdArr);
-
-    // cannot read properties of undefined when loading
-    // fresh room with chrome
-    // chrome eventually works
-    // firefox doesnt
-    cellIdList.forEach((cellId) => {
+    cellIdArr.forEach((cellId) => {
       yNotebook.set(cellId, new Y.Text('useEffect default value'));
     });
-
     console.log(yNotebook.toJSON())
   }, []);
 
