@@ -8,9 +8,16 @@ const yPrettyPrint = (ydoc, msg = "") => {
 
 const mockDoc = new Y.Doc();
 
+// create a hash map for our data
 const yNotebookYMap = mockDoc.getMap("notebook");
 
-const cellIdArr = ["cellId1", "cellId2", "cellId3"];
+/////////////////// add and populate rawCellData ///////////////////////
+// unordered and accessed by cellId key
+// make load up a ymap
+const cellDataYMap = new Y.Map();
+
+// nest the ymap in mockDoc
+yNotebookYMap.set("rawCellData", cellDataYMap);
 
 const mockCellsDummyData = {
   cellId1: { id: "cellId1", content: "I am cell 1", type: "code" },
@@ -18,15 +25,24 @@ const mockCellsDummyData = {
   cellId3: { id: "cellId3", content: "I am cell 3", type: "code" }
 };
 
-const cellDataYMap = new Y.Map();
-yNotebookYMap.set("rawCellData", cellDataYMap);
-
-for (const [key, value] of Object.entries(mockCellsDummyData)) {
-  cellDataYMap.set(key, value);
+// cell body maybe doesn't need to be a ymap idk
+// only content needs to be a ytext
+for (const [key, { id, content, type }] of Object.entries(mockCellsDummyData)) {
+  const cellBodyYMap = new Y.Map();
+  const contentYText = new Y.Text(content);
+  cellBodyYMap.set("id", id);
+  cellBodyYMap.set("content", contentYText);
+  cellBodyYMap.set("type", type);
+  // add to cellDATA not cell body
+  cellDataYMap.set(key, cellBodyYMap);
 }
 
-console.log("raw data put in", JSON.stringify(mockDoc.toJSON()));
+console.log("rawCellData populated", JSON.stringify(mockDoc.toJSON()));
 
+/////////////////// add and populate cellOrderArr ///////////////////////
+// kept in display order
+
+// create a yArray
 const cellOrderArrYArray = new Y.Array();
 yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
 
@@ -34,6 +50,8 @@ for (const cellId of Object.keys(mockCellsDummyData)) {
   cellOrderArrYArray.push([cellId]);
 }
 
-yPrettyPrint(mockDoc, "ordering of cells inserted");
+console.log(mockDoc.get("notebook").get("rawCellData").get("cellId1").toJSON());
+
+yPrettyPrint(mockDoc, "last print of nbmg");
 
 export { mockDoc, yPrettyPrint };
