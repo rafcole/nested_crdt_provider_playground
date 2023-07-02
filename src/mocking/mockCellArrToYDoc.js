@@ -24,6 +24,9 @@ export const mockCellsToYDoc = (...cells) => {
   const yNotebookYMap = mockDoc.getMap("notebook");
   const cellDataYMap = new Y.Map();
   yNotebookYMap.set("rawCellData", cellDataYMap);
+  if (OBSERVE_CELL_DATA_YMAP) {
+    observervability.cellDataYMap(cellDataYMap);
+  }
 
   if (OBSERVE_NOTEBOOK_YMAP) {
     observervability.notebook(yNotebookYMap);
@@ -70,7 +73,7 @@ const observervability = {
     });
   },
 
-  cellDataArr(cellDataYMap) {
+  cellDataYMap(cellDataYMap) {
     cellDataYMap.observe(event => {
       console.log(
         "\n\nEvent detected on cellDataYMap - delta: ",
