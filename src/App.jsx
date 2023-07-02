@@ -5,8 +5,8 @@ import * as Y from "yjs";
 import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
+import { yPrettyPrint } from "./yNotebook";
 
-console.log('test nodemon change')
 
 const doc = new Y.Doc();
 const provider = new WebsocketProvider(
@@ -15,15 +15,50 @@ const provider = new WebsocketProvider(
   doc
 );
 
-const yNotebook = doc.getMap("notebook");
-const cellIdArr = ["monacoA", "monacoB"]; // mock data
+
+const yNotebookYMap = doc.getMap("notebook");
+
+
+// cells in order of display
+// keeping this broken out from the cell data allows us to track
+// updates only on the order without changes getting triggered because
+// of text updates
+const cellIdArr = ["cellId1", "cellId2", "cellId3"];
+
+const mockCellsDummyData = {
+  cellId1: {id: "cellId1", content: "I am cell 1", type: "code"}, 
+  cellId2: {id: "cellId2", content: "I am cell 2", type: "code"}, 
+  cellId3: {id: "cellId3", content: "I am cell 3", type: "code"}
+}
+
+const cellDataYMap = new Y.Map();
+yNotebookYMap.set("rawCellData", cellDataYMap);
+
+for (const [key, value] of Object.entries(mockCellsDummyData)) {
+  cellDataYMap.set(key, value);
+}
+
+console.log("raw data put in", JSON.stringify(doc.toJSON()))
+
+const cellOrderArrYArray = new Y.Array();
+yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
+
+for (const cellId of Object.keys(mockCellsDummyData)) {
+  cellOrderArrYArray.push([cellId]);
+}
+
+yPrettyPrint(doc, 'ordering of cells inserted')
+
 
 function App() {
-  const [cellIdList, setCellIdList] = useState([]);
+  // nested
+  const [cellIdList] = useReactive([]);
+
 
   useEffect(() => {
     // needs async?
-    setCellIdList((_) => cellIdArr);
+    // setCellIdList(() => cellIdArr);
+
 
     // cannot read properties of undefined when loading
     // fresh room with chrome
