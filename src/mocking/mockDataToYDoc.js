@@ -46,13 +46,13 @@ export const mockCellsToYDoc = cells => {
   const mockDoc = new Y.Doc();
   const yNotebookYMap = mockDoc.getMap("notebook");
   if (OBSERVE_NOTEBOOK_YMAP) {
-    observervability.notebook(yNotebookYMap);
+    observability.notebook(yNotebookYMap);
   }
 
   const cellDataYMap = new Y.Map();
   yNotebookYMap.set("rawCellData", cellDataYMap);
   if (OBSERVE_CELL_DATA_YMAP) {
-    observervability.cellDataYMap(cellDataYMap);
+    observability.cellDataYMap(cellDataYMap);
   }
 
   for (let cell of cells) {
@@ -60,7 +60,7 @@ export const mockCellsToYDoc = cells => {
     const contentYText = new Y.Text(cell.content);
 
     if (OBSERVE_CELL_CONTENT_YTEXT) {
-      observervability.cellContentText(contentYText, cell.id);
+      observability.cellContentText(contentYText, cell.id);
     }
 
     cellBodyYMap.set("id", cell.id);
@@ -75,7 +75,7 @@ export const mockCellsToYDoc = cells => {
   yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
 
   if (OBSERVE_CELL_ORDER_ARR) {
-    observersability.cellOrderArr(cellOrderArrYArray);
+    observability.cellOrderArr(cellOrderArrYArray);
   }
 
   const cellIdArr = cells.map(cell => cell.id);
@@ -94,14 +94,14 @@ export const mockJsonToYDoc = json => {
   const yNotebookYMap = mockDoc.getMap("notebook");
 
   if (OBSERVE_NOTEBOOK_YMAP) {
-    observervability.notebook(yNotebookYMap);
+    observability.notebook(yNotebookYMap);
   }
 
   const cellDataYMap = new Y.Map();
   yNotebookYMap.set("rawCellData", cellDataYMap);
 
   if (OBSERVE_CELL_DATA_YMAP) {
-    observervability.cellDataYMap(cellDataYMap);
+    observability.cellDataYMap(cellDataYMap);
   }
 
   for (let entry of Object.entries(json.notebook.rawCellData)) {
@@ -109,7 +109,7 @@ export const mockJsonToYDoc = json => {
     const contentYText = new Y.Text(entry[1].content);
 
     if (OBSERVE_CELL_CONTENT_YTEXT) {
-      observervability.cellContentText(contentYText, cell.id);
+      observability.cellContentText(contentYText, cell.id);
     }
 
     cellBodyYMap.set("id", entry[1].id);
@@ -123,7 +123,7 @@ export const mockJsonToYDoc = json => {
   const cellOrderArrYArray = new Y.Array();
   yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
   if (OBSERVE_CELL_ORDER_ARR) {
-    observersability.cellOrderArr(cellOrderArrYArray);
+    observability.cellOrderArr(cellOrderArrYArray);
   }
 
   cellOrderArrYArray.insert(0, json.notebook.cellOrderArr);
@@ -133,7 +133,7 @@ export const mockJsonToYDoc = json => {
   return mockDoc;
 };
 
-const observervability = {
+const observability = {
   cellContentText(contentYText, id) {
     contentYText.observe(event => {
       console.log(
