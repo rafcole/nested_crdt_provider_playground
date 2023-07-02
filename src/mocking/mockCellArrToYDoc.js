@@ -25,12 +25,16 @@ export const mockCellsToYDoc = (...cells) => {
   const cellDataYMap = new Y.Map();
   yNotebookYMap.set("rawCellData", cellDataYMap);
 
+  if (OBSERVE_NOTEBOOK_YMAP) {
+    observervability.notebook(yNotebookYMap);
+  }
+
   for (let cell of cells) {
     const cellBodyYMap = new Y.Map();
     const contentYText = new Y.Text(cell.content);
 
     if (OBSERVE_CELL_CONTENT_YTEXT) {
-      setCellTextObserver(contentYText, cell.id);
+      observervability.cellContentText(contentYText, cell.id);
     }
 
     cellBodyYMap.set("id", cell.id);
@@ -44,6 +48,10 @@ export const mockCellsToYDoc = (...cells) => {
   const cellOrderArrYArray = new Y.Array();
   yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
 
+  if (OBSERVE_CELL_ORDER_ARR) {
+    observersability.cellOrderArr(cellOrderArrYArray);
+  }
+
   const cellIdArr = cells.map(cell => cell.id);
   cellOrderArrYArray.insert(0, cellIdArr);
 
@@ -52,7 +60,7 @@ export const mockCellsToYDoc = (...cells) => {
   return mockDoc;
 };
 
-const observers = {
+const observervability = {
   cellContentText(contentYText, id) {
     contentYText.observe(event => {
       console.log(
