@@ -86,7 +86,7 @@ export const mockCellsToYDoc = cells => {
   return mockDoc;
 };
 
-export const mockJsonToYDoc = json => {
+export const mockJsonToYDoc = (json, serverConfig) => {
   if (!json) json = mockJsonData;
   json = JSON.parse(json);
 
