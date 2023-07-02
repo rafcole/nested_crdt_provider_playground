@@ -1,9 +1,9 @@
 import * as Y from "yjs";
 
-const OBSERVE_CELL_ORDER_ARR = false;
-const OBSERVE_NOTEBOOK_YMAP = false;
-const OBSERVE_CELL_DATA_YMAP = false;
-const OBSERVE_CELL_CONTENT_YTEXT = false;
+const OBSERVE_CELL_ORDER_ARR = true;
+const OBSERVE_NOTEBOOK_YMAP = true;
+const OBSERVE_CELL_DATA_YMAP = true;
+const OBSERVE_CELL_CONTENT_YTEXT = true;
 
 const yPrettyPrint = (ydoc, msg = "") => {
   console.log(
@@ -162,7 +162,7 @@ const observability = {
   },
 
   notebook(notebookYMap) {
-    yNotebookYMap.observeDeep(event => {
+    notebookYMap.observeDeep(event => {
       console.log("\n\nEvent fired on notebook ymap: ");
       console.log("==> event path: ", event.path);
       console.log("==> event target: ", event.target);
