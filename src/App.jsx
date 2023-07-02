@@ -6,29 +6,62 @@ import { MonacoBinding } from "y-monaco";
 import { WebsocketProvider } from "y-websocket";
 import { useReactive } from "@reactivedata/react";
 
-console.log('test nodemon change')
+import { mockJsonToYDoc, mockCellsToYDoc } from "./mocking/mockDataToYDoc";
 
-const doc = new Y.Doc();
+console.log("test nodemon change");
+
+// to test mockCellsToYDoc
+const doc = mockCellsToYDoc([
+  { id: "cellIdA", content: "console.log('hello i am cell A');", type: "code" },
+  { id: "cellIdB", content: "console.log('hello i am cell B');", type: "code" },
+  { id: "cellIdC", content: "console.log('meow (cell 3)');", type: "code" },
+]);
+
+// to testMockJsonToYDoc
+// const doc = mockJsonToYDoc(JSON.stringify({
+//   "notebook": {
+//     "rawCellData": {
+//       "cellIdA": {
+//         "id": "cellIdA",
+//         "content": "console.log('hello i am cell A dude');",
+//         "type": "code"
+//       },
+//       "cellIdB": {
+//         "id": "cellIdB",
+//         "content": "console.log('hello i am cell B dude');",
+//         "type": "code"
+//       },
+//       "cellIdC": {
+//         "id": "cellIdC",
+//         "content": "console.log('meow (cell 3 dude)');",
+//         "type": "code"
+//       }
+//     },
+//     "cellOrderArr": [
+//       "cellIdA",
+//       "cellIdB",
+//       "cellIdC"
+//     ]
+//   }
+// }));
+
 const provider = new WebsocketProvider(
   import.meta.env.VITE_WEBSOCKET_SERVER,
   import.meta.env.VITE_ROTATING_ROOM || "test-room4",
   doc
 );
 
-const yNotebook = doc.getMap("notebook");
-const cellIdArr = ["monacoA", "monacoB"]; // mock data
-
 function App() {
   const [cellIdList, setCellIdList] = useState([]);
-  useEffect(() => {
-    setCellIdList(() => cellIdArr);
-  }, []);
+  const [document, setDocument] = useState(null);
+
+  const loadDoc = () => {
+    setDocument(doc);
+    setCellIdList(() => doc.get("notebook").get("cellOrderArr").toArray());
+  };
 
   useEffect(() => {
-    cellIdArr.forEach((cellId) => {
-      yNotebook.set(cellId, new Y.Text('useEffect default value'));
-    });
-    console.log(yNotebook.toJSON())
+    loadDoc();
   }, []);
 
   const editorRef = useRef(null);
@@ -37,7 +70,11 @@ function App() {
     return (editor, monaco) => {
       editorRef.current = editor;
 
-      const type = doc.get("notebook").get(cellId);
+      const type = document
+        .get("notebook")
+        .get("rawCellData")
+        .get(cellId)
+        .get("content");
 
       const binding = new MonacoBinding(
         type,
@@ -51,6 +88,7 @@ function App() {
 
   return (
     <div>
+      <h3>multiMonacoSimple</h3>
       {cellIdList.map((cellId) => {
         return (
           <Editor
