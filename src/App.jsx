@@ -9,6 +9,7 @@ import { ws } from "ws";
 import { mockJsonToYDoc } from "./mocking/mockDataToYDoc";
 
 import { yPrettyPrint } from "./notebookMockGenerator";
+import { v4 } from "uuid";
 
 const doc = new Y.Doc();
 
@@ -27,7 +28,7 @@ const provider = new WebsocketProvider(
 function App() {
   const [notebookYMap, setNotebookYMap] = useState({});
   const [rawCellDataYMap, setRawCellYMap] = useState({});
-  const [cellOrderYArr, setCellOrderYArr] = useState([]);
+  const [cellOrderArr, setCellOrderArr] = useState([]);
    // [cellId, cellData
   const editorRef = useRef(null);
   const cellMapRef = useRef(null);
@@ -43,10 +44,10 @@ function App() {
       setRawCellYMap(_rcd)
 
       const _coa = _nb.get('cellOrderArr')
-      setCellOrderYArr(_coa)
+      setCellOrderArr(_coa.toArray())
 
       _coa.observe(e => {
-        setCellOrderYArr(_coa)
+        setCellOrderArr(_coa.toArray())
       })
     })
   }, [])
@@ -63,11 +64,20 @@ function App() {
     console.log(provider.awareness);                
   }
 
+  function handlePushCell () {
+    const id = v4()
+    const newCell = new Y.Map()
+    newCell.set('content', new Y.Text('added via button'))
+    newCell.set('type', 'code')
+    newCell.set('id', id)
 
+    rawCellDataYMap.set(id, newCell)
+    notebookYMap.get('cellOrderArr').push([id]) 
+  }
   return (
     <div>
       <h3>multiMonacoSimple</h3>
-      {cellOrderYArr.map((cellId, index) => {
+      {cellOrderArr.map((cellId, index) => {
         console.log(cellId)
         return (
           <div key={cellId}>
@@ -81,7 +91,7 @@ function App() {
           </div>
         );
       })}
-      <button>Add Code Cell</button>
+      <button onClick={handlePushCell}>Add Code Cell</button>
     </div>
   );
 }
