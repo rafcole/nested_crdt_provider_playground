@@ -86,11 +86,11 @@ export const mockCellsToYDoc = cells => {
   return mockDoc;
 };
 
-export const mockJsonToYDoc = json => {
+export const mockJsonToYDoc = (json, ydoc) => {
   if (!json) json = mockJsonData;
   json = JSON.parse(json);
 
-  const mockDoc = new Y.Doc();
+  const mockDoc = yDoc ? yDoc : new Y.Doc();
   const yNotebookYMap = mockDoc.getMap("notebook");
 
   if (OBSERVE_NOTEBOOK_YMAP) {

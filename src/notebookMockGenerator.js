@@ -28,7 +28,7 @@ yNotebookYMap.set("rawCellData", cellDataYMap);
 const cellOrderArrYArray = new Y.Array();
 yNotebookYMap.set("cellOrderArr", cellOrderArrYArray);
 
-yPrettyPrint(mockDoc, "mockDoc");
+// yPrettyPrint(mockDoc, "mockDoc");
 
 /////////////////// event handlers for updates ///////////////////////
 
@@ -72,7 +72,7 @@ const setCellTextObserver = (contentYText, cellId) => {
   if (OBSERVE_CELL_CONTENT_YTEXT) {
     contentYText.observe(event => {
       console.log(
-        `Change Detected on cell ${id}  - delta: `,
+        `Change Detected on cell ${cellId}  - delta: `,
         event.changes.delta
       );
     });
@@ -109,7 +109,7 @@ for (const [key, { id, content, type }] of Object.entries(mockCellsDummyData)) {
 
 cellDataYMap.get("cellId1").get("content").insert(0, "hello world");
 
-yPrettyPrint(cellDataYMap, "cellDataYmap populated");
+// yPrettyPrint(cellDataYMap, "cellDataYmap populated");
 
 /////////////////// add and populate cellOrderArr ///////////////////////
 // kept in display order
@@ -124,6 +124,6 @@ for (const cellId of Object.keys(mockCellsDummyData)) {
 
 // console.log(mockDoc.get("notebook").get("rawCellData").get("cellId1").toJSON());
 
-yPrettyPrint(mockDoc, "last print of nbmg");
+// yPrettyPrint(mockDoc, "last print of nbmg");
 
 export { mockDoc, yPrettyPrint };
