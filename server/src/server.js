@@ -1,14 +1,14 @@
 import { Server } from "@hocuspocus/server";
 import { Doc } from "yjs";
 import { Awareness } from "y-protocols/awareness";
-import { mockCellsToYDoc, mockJsonToYDoc } from "./utils/mockDataToYDoc.js";
+// import { mockCellsToYDoc, mockJsonToYDoc } from "./utils/mockDataToYDoc.js";
 import * as Y from "yjs";
 import { SQLite } from "@hocuspocus/extension-sqlite";
 import { debounce } from "./utils/debounce.js";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { yPrettyPrint } from "./utils/mockDataToYDoc.js";
 import { Logger } from "@hocuspocus/extension-logger";
-// import { mockJsonToYDoc } from "./utils/mockDataToYDoc.js";
+import { mockJsonToYDoc } from "./utils/notebookTemplateJSON.js";
 
 let count = 0;
 const debouncedLogChange = debounce(data => {

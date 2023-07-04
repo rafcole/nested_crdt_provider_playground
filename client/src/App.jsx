@@ -11,27 +11,31 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import { yPrettyPrint } from "./notebookMockGenerator";
 import { v4 } from "uuid";
 
-// const doc = new Y.Doc();
 
-// const provider = new WebsocketProvider(
-//   import.meta.env.VITE_WEBSOCKET_SERVER,
-//   "levelup",
-//   doc,
-//   { WebSocketPolyfill: ws }
-// );
+//////////////////// y-websocket ///////////////////////
+const doc = new Y.Doc();
 
-let provider = new HocuspocusProvider({
-    // ! hardcoding server for testing
-    url: "ws://127.0.0.1:1238",
-    name: 'superduperrandom',
-    onSynced: (state) => {
-      console.log('sync event mms')
-      yPrettyPrint(provider.document);
-      console.log('end sync event')
-  }})
+const provider = new WebsocketProvider(
+  import.meta.env.VITE_WEBSOCKET_SERVER,
+  "levelup",
+  doc,
+  { WebSocketPolyfill: ws }
+);
+///////////////////// end y-websocket ///////////////////////
 
-const doc = provider.document;
+///////////////////// HP ///////////////////////
+// let provider = new HocuspocusProvider({
+//     // ! hardcoding server for testing
+//     url: "ws://127.0.0.1:1238",
+//     name: 'superduperrandom',
+//     onSynced: (state) => {
+//       console.log('sync event mms')
+//       yPrettyPrint(provider.document);
+//       console.log('end sync event')
+//   }})
 
+// const doc = provider.document;
+///////////////////// end HP ///////////////////////
 function App() {
   const [notebookYMap, setNotebookYMap] = useState(new Y.Map());
   const [rawCellDataYMap, setRawCellYMap] = useState(notebookYMap.get('rawCellData'));
