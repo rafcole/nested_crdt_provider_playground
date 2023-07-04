@@ -16,5 +16,8 @@
     "@hocuspocus/server": "^2.2.0",
     "@hocuspocus/transformer": "^2.2.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
 }

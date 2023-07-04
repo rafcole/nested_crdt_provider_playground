@@ -27,7 +27,7 @@ const provider = new WebsocketProvider(
 // let provider = new HocuspocusProvider({
 //     // ! hardcoding server for testing
 //     url: "ws://127.0.0.1:1238",
-//     name: 'superduperrandom',
+//     name: 'superdupasdferrdanasdfdom',
 //     onSynced: (state) => {
 //       console.log('sync event mms')
 //       yPrettyPrint(provider.document);
@@ -37,10 +37,8 @@ const provider = new WebsocketProvider(
 // const doc = provider.document;
 ///////////////////// end HP ///////////////////////
 function App() {
-  const [notebookYMap, setNotebookYMap] = useState(new Y.Map());
-  const [rawCellDataYMap, setRawCellYMap] = useState(notebookYMap.get('rawCellData'));
-  const [cellOrderArr, setCellOrderArr] = useState([]);
-   // [cellId, cellData
+  const [cellDataArr, setCellDataArr] = useState(doc.getArray('cells').toArray());
+  const cellDataArrRef = useRef(doc.getArray('cells'));
   const editorRef = useRef(null);
 
 
@@ -49,59 +47,67 @@ function App() {
       console.log('\n\nlocal yDoc has synced')
       yPrettyPrint(doc)
 
-      //TODO check for existing
-      const _nb = doc.getMap('notebook')
-      setNotebookYMap(_nb)
+      const _cda = doc.get('cells')
+      setCellDataArr(_cda.toArray())
 
-      const _rcd = _nb.get('rawCellData')
-      setRawCellYMap(_rcd)
-
-      const _coa = _nb.get('cellOrderArr')
-      setCellOrderArr(_coa.toArray())
-
-      _coa.observe(e => {
-        setCellOrderArr(_coa.toArray())
+      _cda.observe(e => {
+        setCellDataArr(_cda.toArray())
       })
     })
   }, [])
 
-  function handleEditorDidMount(editor, monaco, cellId) {
+  function handleEditorDidMount(editor, monaco, cellData, index) {
     editorRef.current = editor;
     
-    const content = rawCellDataYMap.get(cellId).get('content')
+    const content = cellData.get('editorContent')
 
     const binding = new MonacoBinding(content, editorRef.current.getModel(), new Set([editorRef.current]), provider.awareness);               
   }
 
-  function handlePushCell (type) {
+  // co pilot read my other function and wrote this lmao
+  function handleAddCellAtIndex(index, type) {
     const id = v4()
     const newCell = new Y.Map()
-    newCell.set('content', new Y.Text('added via button'))
+    newCell.set('editorContent', new Y.Text('added via button'))
     newCell.set('type', type)
     newCell.set('id', id)
 
-    rawCellDataYMap.set(id, newCell)
-    notebookYMap.get('cellOrderArr').push([id]) 
+    yPrettyPrint(newCell, 'new cell added via button push')
+
+    cellDataArrRef.current.insert(index, [newCell])
   }
+
   return (
     <div>
       <h3>multiMonacoSimple</h3>
-      {cellOrderArr.map((cellId, index) => {
-        console.log(cellId)
-        return (
-          <div key={cellId}>
-          <Editor
-            key={cellId}
-            defaultLanguage="javascript"
-            height="35vh"
-            width="60vw"
-            theme="vs-dark"
-            onMount={(_editor, _monaco)=> handleEditorDidMount(_editor, _monaco, cellId, index)}
-          />
-          </div>
-        );
-      })}
-      <button onClick={() => handlePushCell('code')}>Add Code Cell</button>
+      <div>        
+        <button onClick={() => handleAddCellAtIndex(0, 'code')}>Add Code Cell</button>
+        <button onClick={() => handleAddCellAtIndex(0, 'markdown')}>Add Markdown Cell</button>
+      </div>
+      <div>
+        {yPrettyPrint(doc.get('cells'), '=====> cell data array rendering')}
+        {cellDataArr.map((cellData, index) => {
+          yPrettyPrint(cellData, 'currently rendering cell data')
+          console.log(cellData.id)
+          return (
+            <div key={cellData.id}>
+              <Editor
+                key={cellData.id}
+                defaultLanguage={(cellData.type === 'code') ? "javascript": "markdown"}
+                height="35vh"
+                width="60vw"
+                theme="vs-dark"
+                onMount={(_editor, _monaco)=> handleEditorDidMount(_editor, _monaco, cellData, index)}
+              />
+              <div>
+                <button onClick={() => handleAddCellAtIndex(index + 1, 'code')}>Add Code Cell</button>
+                <button onClick={() => handleAddCellAtIndex(index + 1, 'markdown')}>Add Markdown Cell</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }
