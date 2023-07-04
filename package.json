@@ -24,6 +24,7 @@
     "provider_rc": "cd ../pennant-provider && npm run level"
   },
   "dependencies": {
+    "@hocuspocus/provider": "^2.2.0",
     "@monaco-editor/react": "^4.4.6",
     "@reactivedata/react": "^0.2.1",
     "dotenv": "^16.3.1",
