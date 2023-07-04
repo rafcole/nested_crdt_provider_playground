@@ -1,11 +1,11 @@
 import * as Y from "yjs";
 
-const OBSERVE_CELL_ORDER_ARR = true;
-const OBSERVE_NOTEBOOK_YMAP = true;
-const OBSERVE_CELL_DATA_YMAP = true;
-const OBSERVE_CELL_CONTENT_YTEXT = true;
+const OBSERVE_CELL_ORDER_ARR = false;
+const OBSERVE_NOTEBOOK_YMAP = false;
+const OBSERVE_CELL_DATA_YMAP = false;
+const OBSERVE_CELL_CONTENT_YTEXT = false;
 
-const yPrettyPrint = (ydoc, msg = "") => {
+export const yPrettyPrint = (ydoc, msg = "") => {
   console.log(
     "\n\n==> " + msg + ": \n" + JSON.stringify(ydoc.toJSON(), null, 4) + "\n\n"
   );
@@ -16,7 +16,7 @@ const mockJsonData = JSON.stringify({
     rawCellData: {
       cellIdA: {
         id: "cellIdA",
-        content: "console.log('hello i am cell A');",
+        content: "console.log('hello i am cell A'); this is templated data",
         type: "code"
       },
       cellIdB: {
