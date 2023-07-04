@@ -77,6 +77,29 @@ function App() {
     cellDataArrRef.current.insert(index, [newCell])
   }
 
+  function handleRunCellAtIndex(index) {
+    function extractCodeUpToIndex(index) {
+      let str = ''
+      // iterate over cells
+      for (const cell of cellDataArrRef.current.slice(0, index)) {
+        console.log('cell within extract code', cell)
+        // if cell is code, add to str
+        let foo = cell.get('type')
+        let bar = cell.get('editorContent')
+        if (cell.get('type') === 'code') {
+          str += cell.get('editorContent').toString()
+        }
+      }
+      let qux = str
+      return str
+    }
+    // how can we put the code back in? We'll need the id and to iterate over the array
+    // having a map of cell data would allow us to drop the data right in
+    // being dependent on indexs makes us vulnerable to disjunctures during async operations
+    console.log('Running the following code', extractCodeUpToIndex(index))
+  }
+
+
   return (
     <div>
       <h3>multiMonacoSimple</h3>
@@ -90,6 +113,8 @@ function App() {
           yPrettyPrint(cellData, 'currently rendering cell data')
           console.log(cellData.id)
           return (
+            <div>
+            <div>(cellData.type)</div>
             <div key={cellData.id}>
               <Editor
                 key={cellData.id}
@@ -102,7 +127,9 @@ function App() {
               <div>
                 <button onClick={() => handleAddCellAtIndex(index + 1, 'code')}>Add Code Cell</button>
                 <button onClick={() => handleAddCellAtIndex(index + 1, 'markdown')}>Add Markdown Cell</button>
+                <button onClick={() => handleRunCellAtIndex(index)}>Run Cell</button>
               </div>
+            </div>
             </div>
           );
         })}
